@@ -1,0 +1,20 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="join-container">
+     {% if error %}
+      <p style="color: red; font-weight: bold; text-align: center;">{{ error }}</p>
+    {% endif %}
+    <h2>Enter the Chat Room</h2>
+    <form method="POST" action="/create-room">
+        <input type="text" name="username" placeholder="Your Name" required />
+        <div id="joining_rooms" style="display: flex; gap: 10px;">
+            <!-- <input type="text" name="room_code" placeholder="Room Code" />
+            <input type="submit" value="Join room" name="join_room"   class="room_btns" id="join_room" style="height: 40px;
+    margin-top: 8px;
+"/> -->
+        </div>
+        <input type="submit" name="create_room"   value="Join room" class="room_btns" id="create_room" style="    margin-top: 10px;"/>
+    </form>
+</div>
+
+{% endblock %}

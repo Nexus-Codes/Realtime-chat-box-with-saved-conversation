@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Room</title>
+    <style>
+        body {
+            font-family: Arial;
+            max-width: 600px;
+            margin: 40px auto;
+                background: rgb(36, 36, 41);
+        }
+        #chat-box strong{
+            color: white
+        }
+        #chat-box {
+            color: white;
+            border: 1px solid #ccc;
+            height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            margin-bottom: 10px;
+           background-color: rgb(26, 26, 30);
+        }
+        #message-form {
+            display: flex;
+            gap: 10px;
+        }
+        #message-input {
+            flex: 1;
+            padding: 10px;
+        }
+        #send-btn {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="color: rgb(255, 255, 255);">Chat Room</h1>
+    <div id="chat-box">
+    {% for msg in messages %}
+      <div><strong >{{ msg.name }}:</strong> {{ msg.message }}</div>
+    {% endfor %}
+</div>
+
+    <form id="message-form">
+        <input type="text" id="message-input" placeholder="Type your message..." autocomplete="off" required />
+        <button type="submit" id="send-btn">Send</button>
+    </form>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+
+        // Join the room
+        socket.on("connect", () => {
+            socket.emit("join");
+        });
+
+        // Display messages
+        socket.on("message", (data) => {
+            const chatBox = document.getElementById("chat-box");
+            const messageDiv = document.createElement("div");
+            messageDiv.innerHTML = `<strong>${data.name}:</strong> ${data.message}`;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+
+        // Send messages
+        document.getElementById("message-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const input = document.getElementById("message-input");
+            const msg = input.value.trim();
+            if (msg) {
+                socket.emit("send_message", { message: msg });
+                input.value = "";
+            }
+        });
+    </script>
+</body>
+</html>
